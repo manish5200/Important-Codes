@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+const int INF = 1e9;
+int main() {
+    int N, M, X;
+    cin >> N >> M >> X;
+
+    vector<int> prices(N);
+    vector<vector<int>> knowledge(N, vector<int>(M));
+
+    for (int i = 0; i < N; i++) {
+        cin >> prices[i];
+        for (int j = 0; j < M; j++) {
+            cin >> knowledge[i][j];
+        }
+    }
+
+    int ans = INF;
+
+    for (int mask = 0; mask < (1 << N); mask++) {
+        int total_cost = 0;
+        vector<int> total_knowledge(M, 0);
+        for (int i = 0; i < N; i++) {
+            if (mask & (1 << i)) {
+                total_cost += prices[i];
+                for (int j = 0; j < M; j++) {
+                    total_knowledge[j] += knowledge[i][j];
+                }
+            }
+        }
+
+        bool pass = true;
+        for (int j = 0; j < M; j++) {
+            if (total_knowledge[j] < X) {
+                pass = false;
+                break;
+            }
+        }
+
+        if (pass) {
+            ans = min(ans, total_cost);
+        }
+    }
+
+    if (ans == INF) {
+        cout << "-1" << endl;
+    } else {
+        cout << ans << endl;
+    }
+
+    return 0;
+}
